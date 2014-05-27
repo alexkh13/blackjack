@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.cell.*?> 
+<?import javafx.collections.*?>
+<?import blackjack.gui.utils.*?> 
+
+<GridPane styleClass="bg" fx:controller="blackjack.gui.controllers.GameSetupController" gridLinesVisible="false"
+           xmlns:fx="http://javafx.com/fxml" alignment="CENTER" hgap="5.0" vgap="5.0" >
+    
+  <Label text="Game Setup" styleClass="header" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.valignment="TOP" />
+  
+  <Label text="Player name" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.rowSpan="1" />
+  <TextField fx:id="playerName" text="Player1" minWidth="450" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+  <Label text="Game name" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.rowSpan="1" />
+  <TextField fx:id="gameName" minWidth="450" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#handleCreateGame" />
+  <Button prefWidth="130.0" fx:id="createButton" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="2" onAction="#handleCreateGame" />
+  
+  <Label text="#Humans" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.rowSpan="1" />
+  <NumericTextField fx:id="numHumans" number="1" minWidth="20" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+  
+  <Label text="#Computers" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.rowSpan="1" />
+  <NumericTextField fx:id="numComputers" number="0" minWidth="20" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+  
+  <Label fx:id="message" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+  
+  <Label text="Current players" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="7" GridPane.rowSpan="1" GridPane.valignment="TOP" />
+  <TableView fx:id="playersList" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" prefHeight="200" disable="true" >
+     <columns>
+          <TableColumn text="Type" prefWidth="100">
+            <cellValueFactory>
+                <PropertyValueFactory property="type" />
+            </cellValueFactory>
+            <cellFactory>
+                <FormattedTableCellFactory styleClass="icon" alignment="center">
+                </FormattedTableCellFactory>
+           </cellFactory>
+          </TableColumn>
+          <TableColumn text="Name" prefWidth="400">
+            <cellValueFactory>
+                <PropertyValueFactory property="name" />
+            </cellValueFactory>
+          </TableColumn>
+     </columns>    
+    </TableView>
+
+  <HBox GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="10" spacing="5" GridPane.halignment="RIGHT" >
+      <children>
+        <Button text="Cancel" onAction="#handleCancel" />
+        <Button text="Refresh" onAction="#handleRefresh" />
+      </children>
+  </HBox>
+
+  <columnConstraints>
+    <ColumnConstraints maxWidth="100" prefWidth="100" />
+    <ColumnConstraints maxWidth="250" prefWidth="250" />
+    <ColumnConstraints maxWidth="94.0" prefWidth="83.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints prefHeight="50" /> 
+  </rowConstraints>
+  <stylesheets>
+    <URL value="@../styles/gamesetup-screen.css" />
+  </stylesheets>
+</GridPane>

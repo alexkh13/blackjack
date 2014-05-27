@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import blackjack.gui.utils.PlayerDash ?>
+
+<GridPane styleClass="bg" fx:controller="blackjack.gui.controllers.JoinGameController" gridLinesVisible="false" 
+    xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5">
+
+   
+    <Label text="Player name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    <TextField fx:id="playerName" text="Player2" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    
+    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" >
+        <children> 
+            <ListView fx:id="list" prefWidth="500" prefHeight="400" />
+            <Label fx:id="emptyListMessage" text="There are no games to join" visible="false" />
+        </children>
+    </StackPane>
+    
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.halignment="LEFT" spacing="5" alignment="CENTER_LEFT">
+        <children>
+            <Button text="Back" onAction="#handleBack" />
+            <Label fx:id="status" styleClass="status" text="" />
+        </children>
+    </HBox>
+    
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.halignment="RIGHT" spacing="5" alignment="CENTER_RIGHT">
+        <children>
+            <Button text="Refresh" onAction="#handleRefresh"  />
+            <Button text="Join" onAction="#handleJoin" />
+        </children>
+    </HBox>
+    
+    <stylesheets>
+        <URL value="@../styles/joingame.css" />
+    </stylesheets>
+</GridPane>

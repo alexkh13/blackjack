@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://localhost:8080/blackjack/BlackJackWebService?wsdl" uri="xml-resources/web-service-references/BlackJackWebService/wsdl/localhost_8080/blackjack/BlackJackWebService.wsdl"/>
+    <system systemId="http://localhost:8080/blackjack/BlackJackWebService?xsd=1" uri="xml-resources/web-service-references/BlackJackWebService/wsdl/localhost_8080/blackjack/BlackJackWebService.xsd_1.xsd"/>
+    <system systemId="file:/C:/Users/idmlogic/Documents/Projects/BlackJack/settings.xsd" uri="xml-resources/jaxb/SettingsXMLBinding/settings.xsd"/>
+    <system systemId="http://localhost:8081/blackjack/BlackJackWebService?wsdl" uri="xml-resources/web-service-references/BlackJackWebService/wsdl/localhost_8081/blackjack/BlackJackWebService.wsdl"/>
+    <system systemId="http://localhost:8081/blackjack/BlackJackWebService?xsd=1" uri="xml-resources/web-service-references/BlackJackWebService/wsdl/localhost_8081/blackjack/BlackJackWebService.xsd_1.xsd"/>
+</catalog>

@@ -1,0 +1,22 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.bg {
+    -fx-background-color: linear-gradient(#0000CC, #000066);
+}
+
+.mainFxmlClass {
+    -fx-font-family: Tahoma;
+}
+
+.title-welcome-first {
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+}
+
+.title-welcome-second {
+    -fx-font-weight: bold;
+    -fx-font-size: 30px;
+    -fx-text-fill: white;
+}

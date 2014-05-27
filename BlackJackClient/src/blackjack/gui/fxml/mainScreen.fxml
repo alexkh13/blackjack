@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane styleClass="bg" fx:controller="blackjack.gui.controllers.MainController" gridLinesVisible="false" 
+    xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5">
+
+    <Label text="BlackJack" styleClass="title-welcome-second" 
+        GridPane.halignment="CENTER" 
+        GridPane.columnIndex="0" GridPane.rowIndex="1"
+        GridPane.columnSpan="2"/>
+ 
+    <Label fx:id="status" styleClass="title-welcome-first" 
+        GridPane.halignment="CENTER" 
+        GridPane.columnIndex="0" GridPane.rowIndex="2"
+        GridPane.columnSpan="2"/>
+
+    <Button text="Create Game" fx:id="createGameButton"
+        GridPane.columnIndex="0" GridPane.rowIndex="3"
+        onAction="#handleCreateGame" />
+ 
+    <Button text="Join Game" fx:id="joinGameButton"
+        GridPane.columnIndex="1" GridPane.rowIndex="3"
+        onAction="#handleJoinGame"/>
+ 
+    <stylesheets>
+    <URL value="@../styles/main.css" />
+  </stylesheets>
+</GridPane>

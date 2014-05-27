@@ -1,0 +1,11 @@
+/*
+ * Empty Stylesheet file.
+ */
+.bg {
+    -fx-background-color: linear-gradient(#00CC00, #006600);
+    -fx-text-fill: white;
+}
+
+.status {
+    -fx-text-fill: white;
+}

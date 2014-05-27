@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/C:/Users/Alex/Documents/NetBeansProjects/WSDL%201.1/BlackJackWebService.wsdl" uri="src/conf/xml-resources/web-services/BlackJackWebService/wsdl/BlackJackWebService.wsdl"/>
+    <system systemId="file:/C:/Users/Alex/Documents/NetBeansProjects/WSDL%201.1/BlackJackWebService_schema1.xsd" uri="src/conf/xml-resources/web-services/BlackJackWebService/wsdl/BlackJackWebService_schema1.xsd"/>
+    <system systemId="file:/C:/Users/idmlogic/Documents/Projects/BlackJackWebApp/WSDL%201.2/BlackJackWebService.wsdl" uri="src/conf/xml-resources/web-services/BlackJackWebService/wsdl/BlackJackWebService.wsdl"/>
+    <system systemId="file:/C:/Users/idmlogic/Documents/Projects/BlackJackWebApp/WSDL%201.2/BlackJackWebService_schema1.xsd" uri="src/conf/xml-resources/web-services/BlackJackWebService/wsdl/BlackJackWebService_schema1.xsd"/>
+</catalog>

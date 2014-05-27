@@ -1,0 +1,25 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.bg {
+    -fx-background-color: linear-gradient(#FFFF66, #FFCC00);
+}
+
+.icon{
+    -fx-font-family: FontAwesome;
+    -fx-font-size: 7px;
+}
+
+.error_message {
+    -fx-text-fill: red;
+}
+
+.info_message {
+    -fx-text-fill: green;
+}
+
+.header {
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+}

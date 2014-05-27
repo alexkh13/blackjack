@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import blackjack.gui.utils.* ?>
+
+<GridPane styleClass="bg" fx:controller="blackjack.gui.controllers.GameController" gridLinesVisible="false" 
+    xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5">
+
+    <ToolBar GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="13">
+        <Button text="Exit" onAction="#handleExit"/>
+    </ToolBar>
+    
+    <StackPane fx:id="controlPane" maxWidth="130" GridPane.columnIndex="6" GridPane.rowIndex="3">
+        <children>
+            <VBox fx:id="PLAYER_CHOICE" visible="false" spacing="5" alignment="CENTER">
+                <children>
+                    <Button text="Hit" alignment="CENTER" prefWidth="60" onAction="#handleHit"/> 
+                    <Button text="Double" alignment="CENTER" prefWidth="60" onAction="#handleDouble"/> 
+                    <Button text="Split" alignment="CENTER" prefWidth="60" onAction="#handleSplit"/> 
+                    <Button text="Stand" alignment="CENTER" prefWidth="60" onAction="#handleStand"/> 
+                </children>
+            </VBox>
+            <Button fx:id="START_ROUND" text="Start Round" visible="false"/>
+            <Button fx:id="START_BETTING" text="Start Betting" visible="false"/>
+            <VBox fx:id="BET_SETUP" visible="false">
+                <children>
+                    <Label text="place your bet"/>
+                    <NumericTextField fx:id="betAmount" number="100" jump="10" max="1000" min="10"/>
+                    <Button text="Bet" onAction="#handleBet"/>
+                </children>
+            </VBox>
+        </children>
+    </StackPane>
+    
+    <ProgressIndicator fx:id="timeoutDisplay" progress="0.5" GridPane.columnIndex="6" GridPane.rowIndex="4" 
+                       GridPane.halignment="CENTER" GridPane.valignment="CENTER"  />
+    
+    <Label fx:id="gameStatus" styleClass="game_status" GridPane.columnIndex="6" GridPane.rowIndex="2" GridPane.columnSpan="1"/>
+    
+    <PlayerDash fx:id="dealer" GridPane.columnIndex="6" GridPane.rowIndex="1" GridPane.columnSpan="1"/>
+    
+    <PlayerDash fx:id="box1" cardsAlignment="TOP_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="4"/>
+    <PlayerDash fx:id="box2" cardsAlignment="TOP_LEFT" GridPane.columnIndex="2" GridPane.rowIndex="4" GridPane.columnSpan="4"/>
+    <PlayerDash fx:id="box3" cardsAlignment="TOP_LEFT" GridPane.columnIndex="3" GridPane.rowIndex="5" GridPane.columnSpan="4"/>
+    <PlayerDash fx:id="box4" cardsAlignment="TOP_RIGHT" GridPane.columnIndex="8" GridPane.rowIndex="3" GridPane.columnSpan="4"/>
+    <PlayerDash fx:id="box5" cardsAlignment="TOP_RIGHT" GridPane.columnIndex="7" GridPane.rowIndex="4" GridPane.columnSpan="4"/>
+    <PlayerDash fx:id="box6" cardsAlignment="TOP_RIGHT" GridPane.columnIndex="6" GridPane.rowIndex="5" GridPane.columnSpan="4"/>
+
+    <Label text="Alex©Blackjack™" alignment="BOTTOM_RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="13"/>
+    
+    <columnConstraints>
+        
+    <ColumnConstraints prefWidth="10" />
+    
+    <ColumnConstraints prefWidth="70" />
+    <ColumnConstraints prefWidth="70" />
+    <ColumnConstraints prefWidth="70" />
+    <ColumnConstraints prefWidth="70" />
+    
+    <ColumnConstraints prefWidth="70" />
+    
+    <ColumnConstraints prefWidth="130" />
+    
+    <ColumnConstraints prefWidth="70" />
+    
+    <ColumnConstraints prefWidth="70" />
+    <ColumnConstraints prefWidth="70" />
+    <ColumnConstraints prefWidth="70" />
+    <ColumnConstraints prefWidth="70" />
+    
+    <ColumnConstraints prefWidth="10" />
+
+  </columnConstraints>
+  <rowConstraints>
+  </rowConstraints>
+    
+    <stylesheets>
+    <URL value="@../styles/game.css" />
+  </stylesheets>
+</GridPane>

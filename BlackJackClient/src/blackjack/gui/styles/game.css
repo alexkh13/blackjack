@@ -1,0 +1,110 @@
+/*
+ * Empty Stylesheet file.
+ */
+.bg {
+    -fx-background-color: linear-gradient(#00CC00, #006600);
+    -fx-text-fill: white;
+}
+
+.icon {
+    -fx-font-family: FontAwesome;
+    -fx-font-size: 13px;
+}
+
+#timeoutDisplay .percentage {
+    -fx-fill: null;
+    visibility: hidden;
+}
+
+.card {
+    -fx-background-size: 75px 106px;
+    -fx-effect: dropshadow(one-pass-box, black, 2, 0.0, -2, 0);
+}
+
+.game_status {
+    -fx-text-fill: white;
+    -fx-text-align: center;
+}
+
+.player_name {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.card_box {
+    -fx-bakcground-color: white;
+}
+
+.card_box_text {
+    -fx-font-size: 35px;
+    -fx-effect: dropshadow(one-pass-box, black, 2, 0.0, -2, 0);
+    -fx-font-family: FontAwesome;
+}
+
+.active {
+    -fx-border-color: yellow;
+    -fx-border-width: 5px;
+    -fx-effect: dropshadow(one-pass-box, grey, 2, 0.0, -2, 0);
+}
+
+.unactive {
+    -fx-border-color: null;
+    -fx-border-width: 0px;
+    -fx-effect: null;
+}
+
+.dTWO { -fx-background-image: url("../resources/images/d2.png"); }
+.dTHREE { -fx-background-image: url("../resources/images/d3.png"); }
+.dFOUR { -fx-background-image: url("../resources/images/d4.png"); }
+.dFIVE { -fx-background-image: url("../resources/images/d5.png"); }
+.dSIX { -fx-background-image: url("../resources/images/d6.png"); }
+.dSEVEN { -fx-background-image: url("../resources/images/d7.png"); }
+.dEIGHT { -fx-background-image: url("../resources/images/d8.png"); }
+.dNINE { -fx-background-image: url("../resources/images/d9.png"); }
+.dTEN { -fx-background-image: url("../resources/images/d10.png"); }
+.dJACK { -fx-background-image: url("../resources/images/dj.png"); }
+.dQUEEN{ -fx-background-image: url("../resources/images/dq.png"); }
+.dKING { -fx-background-image: url("../resources/images/dk.png"); }
+.dACE { -fx-background-image: url("../resources/images/da.png"); }
+
+.cTWO { -fx-background-image: url("../resources/images/c2.png"); }
+.cTHREE { -fx-background-image: url("../resources/images/c3.png"); }
+.cFOUR { -fx-background-image: url("../resources/images/c4.png"); }
+.cFIVE { -fx-background-image: url("../resources/images/c5.png"); }
+.cSIX { -fx-background-image: url("../resources/images/c6.png"); }
+.cSEVEN { -fx-background-image: url("../resources/images/c7.png"); }
+.cEIGHT { -fx-background-image: url("../resources/images/c8.png"); }
+.cNINE { -fx-background-image: url("../resources/images/c9.png"); }
+.cTEN { -fx-background-image: url("../resources/images/c10.png"); }
+.cJACK { -fx-background-image: url("../resources/images/cj.png"); }
+.cQUEEN { -fx-background-image: url("../resources/images/cq.png"); }
+.cKING { -fx-background-image: url("../resources/images/ck.png"); }
+.cACE { -fx-background-image: url("../resources/images/ca.png"); }
+
+.hTWO { -fx-background-image: url("../resources/images/h2.png"); }
+.hTHREE { -fx-background-image: url("../resources/images/h3.png"); }
+.hFOUR { -fx-background-image: url("../resources/images/h4.png"); }
+.hFIVE { -fx-background-image: url("../resources/images/h5.png"); }
+.hSIX { -fx-background-image: url("../resources/images/h6.png"); }
+.hSEVEN { -fx-background-image: url("../resources/images/h7.png"); }
+.hEIGHT { -fx-background-image: url("../resources/images/h8.png"); }
+.hNINE { -fx-background-image: url("../resources/images/h9.png"); }
+.hTEN { -fx-background-image: url("../resources/images/h10.png"); }
+.hJACK { -fx-background-image: url("../resources/images/hj.png"); }
+.hQUEEN { -fx-background-image: url("../resources/images/hq.png"); }
+.hKING { -fx-background-image: url("../resources/images/hk.png"); }
+.hACE { -fx-background-image: url("../resources/images/ha.png"); }
+
+.sTWO { -fx-background-image: url("../resources/images/s2.png"); }
+.sTHREE { -fx-background-image: url("../resources/images/s3.png"); }
+.sFOUR { -fx-background-image: url("../resources/images/s4.png"); }
+.sFIVE { -fx-background-image: url("../resources/images/s5.png"); }
+.sSIX { -fx-background-image: url("../resources/images/s6.png"); }
+.sSEVEN { -fx-background-image: url("../resources/images/s7.png"); }
+.sEIGHT { -fx-background-image: url("../resources/images/s8.png"); }
+.sNINE { -fx-background-image: url("../resources/images/s9.png"); }
+.sTEN { -fx-background-image: url("../resources/images/s10.png"); }
+.sJACK { -fx-background-image: url("../resources/images/sj.png"); }
+.sQUEEN { -fx-background-image: url("../resources/images/sq.png"); }
+.sKING { -fx-background-image: url("../resources/images/sk.png"); }
+.sACE { -fx-background-image: url("../resources/images/sa.png"); }
