@@ -74,6 +74,7 @@ public class BlackJackGameRoom {
         players.put(playerId, getPlayerDetails(player));
         details.setJoinedHumanPlayers(details.getJoinedHumanPlayers()+1);
         if(gameReady()) {
+            details.setStatus(GameStatus.ACTIVE);
             startGame();
         }
         return playerId;

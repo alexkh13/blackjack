@@ -1,0 +1,45 @@
+<div class="main-header ui-corner-all ui-widget-header">Create new game</div>
+<div class="ui-widget-content ui-corner-all" style="background-color:#d9d9d9">
+    <table height="100%">
+        <tr>
+            <td>Player name</td>
+            <td><input type="text"></td>
+        </tr>
+        <tr>
+            <td>Game name</td>
+            <td><input type="text"></td>
+        </tr>
+        <tr>
+            <td>#Humans</td>
+            <td><input type="text" id="numberOfHumans"></td>
+        </tr>
+        <tr>
+            <td>#Computers</td>
+            <td><input type="text" id="numberOfComputers"></td>
+        </tr>
+    </table>
+</div>
+<div>
+    <div>Waiting for other players to join...</div>
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Name</th>
+        </tr>
+        <tr>
+            <td>Human</td>
+            <td>Alex</td>
+        </tr>
+        <tr>
+            <td>Computer</td>
+            <td>Teddy</td>
+        </tr>
+    </table>
+</div>
+<div>
+    <button onclick="createGame()">Create</button>
+</div>
+<script>
+    $("#numberOfHumans").spinner();
+    $("#numberOfComputers").spinner();
+</script>
