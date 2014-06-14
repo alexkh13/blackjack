@@ -88,7 +88,12 @@ public class BlackJackService {
     }
 
     private int getPlayerId(String gameName) {
-        return map.get(sessionId).get(gameName);
+        try {
+            return map.get(sessionId).get(gameName);
+        }
+        catch(NullPointerException ex) {
+            return 0;
+        }
     }
 
     private void addPlayerId(String gameName, int playerId) {

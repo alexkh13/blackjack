@@ -12,7 +12,7 @@
         <servlet-name>BlackJackWebService</servlet-name>
         <url-pattern>/BlackJackWebService</url-pattern>
     </servlet-mapping>
-    <session-config> 
+    <session-config>
         <session-timeout>
             30
         </session-timeout>

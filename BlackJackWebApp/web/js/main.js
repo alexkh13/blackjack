@@ -54,11 +54,12 @@ function goToCreateGame() {
 
 function createGame() {
     new Game();
-    gotToGame();
+    goToGame();
 }
 
-function gotToGame() {
+function goToGame() {
     loadPage(PAGES.GAME, function() {
+        new Game();
     });
 }
 
@@ -67,7 +68,8 @@ function joinGame() {
     $(gamesListContainerID).show();
 }
 
-loadPage(PAGES.WELCOME);
+//loadPage(PAGES.GAME);
+//gotToGame();
 
 function hideAllMenuContainers() {
     $(actionContainerID).hide();
@@ -108,4 +110,63 @@ $(function() {
            $(this).removeClass("ui-state-highlight");
         });
     });
+
+    $("#serverUrl").val("http://localhost:8081/blackjack/BlackJackWebService");
+
+    $.ajax({
+        url: 'login'
+    })
+        .done(function(url) {
+            serverUrl = url;
+            showAvailableGames();
+        })
+        .fail(function() {
+            $("#login").modal('show');
+        });
+
 });
+
+var serverUrl;
+
+function showAvailableGames() {
+    $("#games").modal('show');
+    $("#serverUrlDisplay").text(serverUrl);
+    var list = $("#availableGamesList");
+    $.ajax({
+        url: 'api'
+    })
+        .done(function(games) {
+            $(games).each(function(i, game) {
+                var row = $("<tr>");
+                row.addClass("game-row");
+                row.append("<td>" + game.name + "</td>");
+                row.append("<td>" + game.numberOfHumans + "</td>");
+                row.append("<td>" + game.numberOfComputers + "</td>");
+                row.append("<td>" + game.numberOfJoinedHumans + "/" + game.numberOfHumans + "</td>");
+                row.append("<td>" + game.status + "</td>");
+                list.append(row);
+            })
+        })
+        .fail(function() {
+            $("#games").modal('hide');
+            $("#login").modal('show');
+        })
+}
+
+function login() {
+    serverUrl = $("#serverUrl").val();
+    $.ajax({
+        url: 'login',
+        type: 'POST',
+        data: JSON.stringify({
+            serverUrl: serverUrl
+        })
+    })
+        .done(function() {
+            $("#login").modal('hide');
+            showAvailableGames();
+        })
+        .fail(function(xhr,status,err) {
+            console.log(status, err, xhr);
+        })
+}

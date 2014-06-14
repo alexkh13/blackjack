@@ -22,6 +22,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.ws.WebServiceRef;
 import ws.blackjack.BlackJackWebService;
 import ws.blackjack.BlackJackWebService_Service;
@@ -45,14 +46,16 @@ public class BlackJackServlet extends HttpServlet {
     private final Gson gson = new Gson();
     private String requestGameName;
     private PrintWriter out;
-    
-    enum BlackJackError {
-        GAME_DOES_NOT_EXIST,
-        GAME_EXIST
+
+    private boolean validateSession(HttpSession session) {
+        webService = (BlackJackWebService)session.getAttribute("webService");
+        return webService != null;
     }
     
-    @Override
-    public void init() {
+    enum BlackJackError {
+        NOT_LOGGED_IN,
+        GAME_DOES_NOT_EXIST,
+        GAME_EXIST
     }
     
     /**
@@ -64,37 +67,29 @@ public class BlackJackServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected boolean processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         out = response.getWriter();
-        
         requestGameName = null;
         
-        String pathInfo = request.getPathInfo();
-        if(pathInfo != null) {
-            String[] pathParts = request.getPathInfo().split("/");
-            if(pathParts.length > 0) {
-                requestGameName = pathParts[1];
+        if(!validateSession(request.getSession(true))) {
+            error(response, BlackJackError.NOT_LOGGED_IN);
+            return false;
+        }
+        else {
+            String pathInfo = request.getPathInfo();
+            if(pathInfo != null) {
+                String[] pathParts = request.getPathInfo().split("/");
+                if(pathParts.length > 0) {
+                    requestGameName = pathParts[1];
+                }
             }
+
+            service = new BlackJackService(webService, request.getSession().getId());
         }
         
-        try {
-            if(getServletContext().getAttribute("webService") == null) {
-                blackJackWebService = new BlackJackWebService_Service(new URL(getServletContext().getInitParameter("webservice_url")));
-                webService = blackJackWebService.getBlackJackWebServicePort();
-                getServletContext().setAttribute("webService", webService);
-            }
-            else {
-                webService = (BlackJackWebService)getServletContext().getAttribute("webService");
-            }
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(BlackJackServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        sessionId = request.getSession(true).getId();
-        service = new BlackJackService(webService, sessionId);
-        
+        return true;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -109,23 +104,24 @@ public class BlackJackServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-        if(requestGameName != null) {
-            try {
-                System.out.println("Request for " + requestGameName);
-                send(service.getGame(requestGameName));
-            } 
-            catch (GameDoesNotExists_Exception ex) {
-                error(response, BlackJackError.GAME_DOES_NOT_EXIST);
-            } 
-            catch (InvalidParameters_Exception ex) {
-                error(response, ex.getMessage());
+        if(processRequest(request, response)) {
+            if(requestGameName != null) {
+                try {
+                    System.out.println("Request for " + requestGameName);
+                    send(service.getGame(requestGameName));
+                } 
+                catch (GameDoesNotExists_Exception ex) {
+                    error(response, BlackJackError.GAME_DOES_NOT_EXIST);
+                } 
+                catch (InvalidParameters_Exception ex) {
+                    error(response, ex.getMessage());
+                }
             }
-        }
-        else {
-            System.out.println("Request for all games");
-            // get waiting games
-            send(service.getAvailableGames());
+            else {
+                System.out.println("Request for all games");
+                // get waiting games
+                send(service.getAvailableGames());
+            }
         }
     }
 
@@ -140,39 +136,38 @@ public class BlackJackServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-            BlackJackRequest req = getBlackJackRequest(request);
-            
-            switch(req.getType()) {
-                case CREATE:
-                    send(service.createGame(req.getGameName(), req.getPlayerName(), req.getHumans(), req.getComputers()));
-                    System.out.println("New player id: " + service.getPlayerId());
-                    request.getSession().setAttribute("playerId", service.getPlayerId());
-                    break;
-                case JOIN:
-                    send(service.joinGame(req.getGameName(), req.getPlayerName()));
-                    request.getSession().setAttribute("playerId", service.getPlayerId());
-                    break;
-                case RESIGN:
-                    service.resign(sessionId);
-                    webService.resign(playerId);
-                    break;
-                case ACTION:
-                    
-                    break;
+        if(processRequest(request, response)) {
+            try {
+                BlackJackRequest req = getBlackJackRequest(request);
+
+                switch(req.getType()) {
+                    case CREATE:
+                        send(service.createGame(req.getGameName(), req.getPlayerName(), req.getHumans(), req.getComputers()));
+                        break;
+                    case JOIN:
+                        send(service.joinGame(req.getGameName(), req.getPlayerName()));
+                        break;
+                    case RESIGN:
+                        service.resign(sessionId);
+                        break;
+                    case ACTION:
+
+                        break;
+                }
+            } 
+            catch (GameDoesNotExists_Exception ex) {
+                error(response, BlackJackError.GAME_DOES_NOT_EXIST);
+            } 
+            catch (DuplicateGameName_Exception ex) {
+                error(response, BlackJackError.GAME_EXIST);
+            } 
+            catch (InvalidParameters_Exception ex) {
+                error(response, ex.getMessage());
             }
-        } 
-        catch (GameDoesNotExists_Exception ex) {
-            error(response, BlackJackError.GAME_DOES_NOT_EXIST);
-        } 
-        catch (DuplicateGameName_Exception ex) {
-            error(response, BlackJackError.GAME_EXIST);
-        } 
-        catch (InvalidParameters_Exception ex) {
-            error(response, ex.getMessage());
+            catch(NullPointerException ex) {
+                error(response, "Bad request");
+            }
         }
-        
     }
 
     /**
@@ -214,6 +209,8 @@ public class BlackJackServlet extends HttpServlet {
             case GAME_EXIST:
                 response.sendError(500, "Game already exist");
                 break;
+            case NOT_LOGGED_IN:
+                response.sendError(403, "Not logged in");
         }
     }
     
