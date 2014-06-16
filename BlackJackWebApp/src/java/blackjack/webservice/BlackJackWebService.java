@@ -122,8 +122,8 @@ public class BlackJackWebService {
                 BlackJackGameRoom room = waitingGames.get(gameName);
                 int playerId = room.addPlayer(playerName, money);
                 if(room.isReady()) {
-                    waitingGames.remove(gameName);
                     activeGames.put(gameName, room);
+                    waitingGames.remove(gameName);
                 }
                 playerGames.put(playerId, room);
                 return playerId;

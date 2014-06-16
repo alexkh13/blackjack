@@ -86,7 +86,7 @@ public class BlackJackServlet extends HttpServlet {
                 }
             }
 
-            service = new BlackJackService(webService, request.getSession().getId());
+            service = new BlackJackService(webService);
         }
         
         return true;
@@ -108,7 +108,9 @@ public class BlackJackServlet extends HttpServlet {
             if(requestGameName != null) {
                 try {
                     System.out.println("Request for " + requestGameName);
-                    send(service.getGame(requestGameName));
+                    int playerId = (int)request.getSession().getAttribute(requestGameName);
+                    BlackJackResponse res = service.getGame(playerId, requestGameName);
+                    send(res);
                 } 
                 catch (GameDoesNotExists_Exception ex) {
                     error(response, BlackJackError.GAME_DOES_NOT_EXIST);
@@ -120,7 +122,14 @@ public class BlackJackServlet extends HttpServlet {
             else {
                 System.out.println("Request for all games");
                 // get waiting games
-                send(service.getAvailableGames());
+                ArrayList<BlackJackResponse> ress = service.getAvailableGames();
+                for(BlackJackResponse res : ress) {
+                    try {
+                        res.setPlayerId((int)request.getSession().getAttribute(res.getName()));
+                    }
+                    catch(NullPointerException ex) {}
+                }
+                send(ress);
             }
         }
     }
@@ -139,16 +148,21 @@ public class BlackJackServlet extends HttpServlet {
         if(processRequest(request, response)) {
             try {
                 BlackJackRequest req = getBlackJackRequest(request);
-
+                BlackJackResponse res;
                 switch(req.getType()) {
                     case CREATE:
-                        send(service.createGame(req.getGameName(), req.getPlayerName(), req.getHumans(), req.getComputers()));
+                        res = service.createGame(req.getGameName(), req.getPlayerName(), req.getHumans(), req.getComputers());
+                        request.getSession().setAttribute(res.getName(), res.getPlayerId());
+                        send(res);
                         break;
                     case JOIN:
-                        send(service.joinGame(req.getGameName(), req.getPlayerName()));
+                        res = service.joinGame(req.getGameName(), req.getPlayerName());
+                        request.getSession().setAttribute(res.getName(), res.getPlayerId());
+                        send(res);
                         break;
                     case RESIGN:
-                        service.resign(sessionId);
+                        int playerId = (int)request.getSession().getAttribute(req.getGameName());
+                        service.resign(playerId);
                         break;
                     case ACTION:
 

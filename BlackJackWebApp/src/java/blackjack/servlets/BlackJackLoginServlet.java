@@ -36,6 +36,7 @@ public class BlackJackLoginServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("application/json");
         BlackJackLoginRequest req = gson.fromJson(request.getReader(), BlackJackLoginRequest.class);
         BlackJackWebService webService = (BlackJackWebService)request.getSession(true).getAttribute("webService");
         if(webService == null && req != null) {
@@ -43,14 +44,26 @@ public class BlackJackLoginServlet extends HttpServlet {
             BlackJackWebService bjWebServicePort = bjWebService.getBlackJackWebServicePort();
             request.getSession(true).setAttribute("webService", bjWebServicePort);
             request.getSession().setAttribute("serverUrl", req.serverUrl);
-            response.getWriter().print(req.serverUrl);
+            request.getSession().setAttribute("playerName", req.playerName);
+            output(response,req.playerName,req.serverUrl);
         }
         else if(webService == null){
             response.sendError(403, "Not logged in");
         }
         else {
-            response.getWriter().print(request.getSession().getAttribute("serverUrl"));
+            output(
+                    response,
+                    (String)request.getSession().getAttribute("playerName"),
+                    (String)request.getSession().getAttribute("serverUrl")
+            );
         }
+    }
+    
+    private void output(HttpServletResponse response, String playerName, String serverUrl) throws IOException {
+        BlackJackLoginRequest res = new BlackJackLoginRequest();
+            res.playerName = playerName;
+            res.serverUrl = serverUrl;
+            response.getWriter().print(gson.toJson(res));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

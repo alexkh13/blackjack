@@ -23,17 +23,12 @@ import ws.blackjack.InvalidParameters_Exception;
 public class BlackJackService {
     private final float PLAYER_START_MONEY = 4000;
     private final BlackJackWebService webService;
-    private String sessionId;
-    private HashMap<String,HashMap<String,Integer>> map;
-    BlackJackService(BlackJackWebService webService, String sessionId) {
+    BlackJackService(BlackJackWebService webService) {
         this.webService = webService;
-        this.sessionId = sessionId;
-        this.map = new HashMap<>();
     }
     
     private BlackJackResponse newResponse(GameDetails details) {
         BlackJackResponse res = new BlackJackResponse(details);
-        res.setPlayerId(getPlayerId(details.getName()));
         return res;
     }
     
@@ -47,8 +42,8 @@ public class BlackJackService {
         try {
             webService.createGame(gameName, humans, computers);
             int playerId = webService.joinGame(gameName, playerName, PLAYER_START_MONEY);
-            addPlayerId(gameName, playerId);
             BlackJackResponse res = newResponse(webService.getGameDetails(gameName));
+            res.setPlayerId(playerId);
             return res;
         } 
         catch (GameDoesNotExists_Exception ex) {
@@ -59,8 +54,7 @@ public class BlackJackService {
     
     public BlackJackResponse joinGame(String gameName, String playerName) throws GameDoesNotExists_Exception, InvalidParameters_Exception {
         int playerId = webService.joinGame(gameName, playerName, PLAYER_START_MONEY);
-        addPlayerId(gameName, playerId);
-        return newResponse(gameName);
+        return getGame(playerId, gameName);
     }
 
     ArrayList<BlackJackResponse> getAvailableGames() {
@@ -76,32 +70,15 @@ public class BlackJackService {
         return games;
     }
 
-    BlackJackResponse getGame(String requestGameName) throws GameDoesNotExists_Exception, InvalidParameters_Exception {
+    BlackJackResponse getGame(int playerId, String requestGameName) throws GameDoesNotExists_Exception, InvalidParameters_Exception {
         BlackJackResponse res = new BlackJackResponse(webService.getGameDetails(requestGameName));
-        res.setEvents(webService.getEvents(getPlayerId(requestGameName), 0));
+        res.setPlayerId(playerId);
+        res.setEvents(webService.getEvents(playerId, -1));
+        res.setPlayers(webService.getPlayersDetails(requestGameName));
         return res;
     }
 
-    void resign(String gameName) throws InvalidParameters_Exception {
-        int playerId = getPlayerId(gameName);
+    void resign(int playerId) throws InvalidParameters_Exception {
         webService.resign(playerId);
-    }
-
-    private int getPlayerId(String gameName) {
-        try {
-            return map.get(sessionId).get(gameName);
-        }
-        catch(NullPointerException ex) {
-            return 0;
-        }
-    }
-
-    private void addPlayerId(String gameName, int playerId) {
-        HashMap<String,Integer> games = map.get(sessionId);
-        if(games == null) {
-            games = new HashMap<>();
-            map.put(sessionId, games);
-        }
-        games.put(gameName, playerId);
     }
 }

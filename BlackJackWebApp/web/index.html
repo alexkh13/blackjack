@@ -28,11 +28,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">BlackJack login</h4>
+                    <h4 class="modal-title">BlackJack login</h4>
                 </div>
                 <div class="modal-body">
-                    <label class="form-label">Please specify a valid BlackJack Server URL</label>
-                    <input id="serverUrl" type="text" class="form-control" placeholder="http://url:port/path">
+                    <div class="form-group">
+                        <label class="form-label">Please specify a valid BlackJack Server URL</label>
+                        <input id="serverUrl" type="text" class="form-control" placeholder="http://url:port/path">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">and choose a valid player name</label>
+                        <input id="playerName" type="text" class="form-control" placeholder="">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="login()">Connect</button>
@@ -42,12 +48,17 @@
     </div>
     <div class="modal fade" id="games" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">Available games on <span id="serverUrlDisplay"></span></h4>
+                    <h4 class="modal-title">Hello <span style="color:#2a6496" id="playerNameDisplay"></span>, you're connected to <span style="color:#a3a3a3" id="serverUrlDisplay"></span></h4>
                 </div>
                 <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Click on a "Join game" button to join a game, or click on "Create new" to start a new game.
+                        </div>
+                    </div>
                     <table class="table table-hover table-condensed">
                         <thead>
                             <th>Game name</th>
@@ -55,18 +66,105 @@
                             <th>Computers</th>
                             <th>Joined</th>
                             <th>Status</th>
+                            <th></th>
                         </thead>
                         <tbody id="availableGamesList">
                         </tbody>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-danger" style="float:left" href="logout">Logout</a>
-                    <button type="button" class="btn btn-default">Create new</button>
-                    <button type="button" class="btn btn-primary" disabled>Join game</button>
+                    <a class="btn btn-danger" style="float:left" href="logout"><i class="fa fa-power-off"></i> Disconnect</a>
+                    <button type="button" class="btn btn-primary" onclick="showCreateGame()">Create new</button>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         data-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Create game</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" onsubmit="return false">
+                        <div class="form-group">
+                            <label for="game-name" class="col-sm-4 control-label">Game name</label>
+                            <div class="col-sm-8">
+                                <input id="game-name" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="num-humans" class="col-sm-4 control-label">Number of Humans</label>
+                            <div class="col-sm-8">
+                                <div class="input-group spinner">
+                                    <input type="text" id="num-humans" class="form-control" value="1">
+                                    <div class="input-group-btn-vertical">
+                                        <button class="btn btn-default"><i class="fa fa-caret-up"></i></button>
+                                        <button class="btn btn-default"><i class="fa fa-caret-down"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="num-computers" class="col-sm-4 control-label">Number of Computers</label>
+                            <div class="col-sm-8">
+                                <div class="input-group spinner">
+                                    <input type="text" id="num-computers" class="form-control" value="0">
+                                    <div class="input-group-btn-vertical">
+                                        <button class="btn btn-default"><i class="fa fa-caret-up"></i></button>
+                                        <button class="btn btn-default"><i class="fa fa-caret-down"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger" style="float:left" onclick="showAvailableGames('#create')">Cancel</a>
+                    <button type="button" class="btn btn-success" onclick="createGame()">Let's go!&nbsp;&nbsp;<i class="fa fa-play-circle"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="lobby" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         data-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><span id="gameNameDisplay">Game name</span></h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                        <th>Player name</th>
+                        <th>Human</th>
+                        <th>Money</th>
+                        </thead>
+                        <tbody id="playersList">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger" style="float:left" onclick="resign()">Leave</a>
+                    <span class="form-label">Waiting for other players...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="main-header game-titlebar ui-corner-all ui-widget-header">
+            <span>Game name</span>
+            <div class="dealer-container">
+                <table cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td class="dealer-title">Dealer</td>
+                        <td id="dealerCards" class="dealer-cards"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="playerList"></div>
     </div>
     <!--<table class="main-wrapper" cellspacing="0" cellpadding="0">-->
         <!--<tr>-->

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ws.blackjack.Event;
 import ws.blackjack.GameDetails;
+import ws.blackjack.PlayerDetails;
 
 /**
  *
@@ -23,6 +24,7 @@ public class BlackJackResponse {
     int numberOfJoinedHumans;
     int playerId;
     List<Event> events;
+    List<PlayerDetails> players;
 
     BlackJackResponse() {
         
@@ -90,5 +92,12 @@ public class BlackJackResponse {
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
+
+    void setPlayers(List<PlayerDetails> playersDetails) {
+        players = playersDetails;
+    }
     
+    List<PlayerDetails> getPlayers() {
+        return players;
+    }
 }
