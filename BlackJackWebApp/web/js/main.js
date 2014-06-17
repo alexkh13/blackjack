@@ -27,6 +27,8 @@ var PAGES = {
     WELCOME: "welcome.html"
 };
 
+var currentTimeout;
+
 function loadPage(page, callback) {
     $.get(PAGES_DIRECTORY + "/" + page, function(html) {
         $(mainContainerID).html(html);
@@ -62,18 +64,6 @@ function hideAllMenuContainers() {
 
 $(function() {
     hideAllMenuContainers();
-
-    $(betAmountID).text("\uf155" + DEFAULT_BET_AMOUNT);
-    $(betSliderID).slider({
-        range: "min",
-        value: DEFAULT_BET_AMOUNT,
-        min: 50,
-        max: 1000,
-        step: 50,
-        slide: function( event, ui ) {
-            $(betAmountID).text( "\uf155" + ui.value );
-        }
-    });
 
     $(actionTimerID).pietimer({
         timerSeconds: 10,
@@ -114,10 +104,6 @@ $(function() {
         .fail(function() {
             $("#login").modal('show');
         });
-
-
-    new Game();
-
 });
 
 var serverUrl;
@@ -147,7 +133,20 @@ function showAvailableGames(current) {
                     button.text("Resume game");
                     button.addClass("btn-success");
                     button.bind("click",function() {
-                        showGameLobby(game.name);
+                        if(game.status == 'ACTIVE') {
+                        $.ajax({
+                            url: 'api/' + game.name,
+                        })
+                            .done(function(data) {
+                                showGame(game.name, data.players, true);
+                            })
+                            .fail(function() {
+                                // todo:
+                            })
+                        }
+                        else {
+                            showGameLobby(game.name);
+                        }
                     });
                 }
                 else {
@@ -207,7 +206,7 @@ function showCreateGame() {
 
 var gameName;
 
-function refereshPlayerList(players) {
+function refereshPlayerList(players, theRest) {
     var list = $("#playersList");
     list.empty();
     $(players).each(function(i, player) {
@@ -217,6 +216,12 @@ function refereshPlayerList(players) {
         row.append("<td>" + player.money + "</td>");
         list.append(row);
     });
+    for(var i=0; i<theRest;i++) {
+        var row = $("<tr>");
+        row.append("<td colspan='3'>Empty player slot</td>");
+        list.append(row);
+    }
+    return
 }
 
 function showGameLobby(name){
@@ -224,15 +229,30 @@ function showGameLobby(name){
     $("#games").modal("hide");
     $("#lobby").modal("show");
     $("#gameNameDisplay").text(name);
-    $.ajax({
-        url: 'api/' + name
-    })
-        .done(function(data){
-            refereshPlayerList(data.players);
-        })
-        .fail(function() {
 
+    function refresher() {
+        $.ajax({
+            url: 'api/' + name
         })
+            .done(function(data){
+                refereshPlayerList(data.players, data.numberOfHumans - data.numberOfJoinedHumans);
+                if(data.events.length) {
+                    showGame(name, data.players);
+                }
+                else {
+                    currentTimeout = setTimeout(refresher, 1000);
+                }
+            })
+            .fail(function() {
+
+            })
+    }
+
+    $("#lobbyStatusText").text("Waiting for other players...");
+
+    $("#lobby").on('shown.bs.modal', function() {
+        refresher();
+    });
 }
 
 function createGame() {
@@ -274,4 +294,28 @@ function joinGame(name) {
         .fail(function() {
 
         })
+}
+
+function runInterval(run, checker, finish, interval) {
+    var interval = setInterval(function() {
+        if(!checker(run())) {
+            clearInterval(interval);
+            finish();
+        }
+    }, interval);
+    return interval;
+}
+
+function showGame(game, players, fast) {
+    gameName = game;
+    if(!fast) {
+        $("#lobbyStatusText").text("Game ready! Please wait...");
+    }
+    setTimeout(function() {
+        $("#games").modal("hide");
+        $("#lobby").modal("hide");
+
+        new Game(game, players);
+
+    }, fast ? 0 : 3000);
 }

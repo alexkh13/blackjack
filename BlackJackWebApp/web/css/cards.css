@@ -1,11 +1,55 @@
-.card-ha {
-    background-image: url('../images/ha.png');
-}
+.card-ha { background-image: url('../images/ha.png'); }
+.card-hk { background-image: url('../images/hk.png'); }
+.card-hq { background-image: url('../images/hq.png'); }
+.card-hj { background-image: url('../images/hj.png'); }
+.card-h10 { background-image: url('../images/h10.png'); }
+.card-h9 { background-image: url('../images/h9.png'); }
+.card-h8 { background-image: url('../images/h8.png'); }
+.card-h7 { background-image: url('../images/h7.png'); }
+.card-h6 { background-image: url('../images/h6.png'); }
+.card-h5 { background-image: url('../images/h5.png'); }
+.card-h4 { background-image: url('../images/h4.png'); }
+.card-h3 { background-image: url('../images/h3.png'); }
+.card-h2 { background-image: url('../images/h2.png'); }
 
-.card-cj {
-    background-image: url('../images/cj.png');
-}
+.card-ca { background-image: url('../images/ca.png'); }
+.card-ck { background-image: url('../images/ck.png'); }
+.card-cq { background-image: url('../images/cq.png'); }
+.card-cj { background-image: url('../images/cj.png'); }
+.card-c10 { background-image: url('../images/c10.png'); }
+.card-c9 { background-image: url('../images/c9.png'); }
+.card-c8 { background-image: url('../images/c8.png'); }
+.card-c7 { background-image: url('../images/c7.png'); }
+.card-c6 { background-image: url('../images/c6.png'); }
+.card-c5 { background-image: url('../images/c5.png'); }
+.card-c4 { background-image: url('../images/c4.png'); }
+.card-c3 { background-image: url('../images/c3.png'); }
+.card-c2 { background-image: url('../images/c2.png'); }
 
-.card-s6 {
-    background-image: url('../images/s6.png');
-}
+.card-sa { background-image: url('../images/sa.png'); }
+.card-sk { background-image: url('../images/sk.png'); }
+.card-sq { background-image: url('../images/sq.png'); }
+.card-sj { background-image: url('../images/sj.png'); }
+.card-s10 { background-image: url('../images/s10.png'); }
+.card-s9 { background-image: url('../images/s9.png'); }
+.card-s8 { background-image: url('../images/s8.png'); }
+.card-s7 { background-image: url('../images/s7.png'); }
+.card-s6 { background-image: url('../images/s6.png'); }
+.card-s5 { background-image: url('../images/s5.png'); }
+.card-s4 { background-image: url('../images/s4.png'); }
+.card-s3 { background-image: url('../images/s3.png'); }
+.card-s2 { background-image: url('../images/s2.png'); }
+
+.card-da { background-image: url('../images/da.png'); }
+.card-dk { background-image: url('../images/dk.png'); }
+.card-dq { background-image: url('../images/dq.png'); }
+.card-dj { background-image: url('../images/dj.png'); }
+.card-d10 { background-image: url('../images/d10.png'); }
+.card-d9 { background-image: url('../images/d9.png'); }
+.card-d8 { background-image: url('../images/d8.png'); }
+.card-d7 { background-image: url('../images/d7.png'); }
+.card-d6 { background-image: url('../images/d6.png'); }
+.card-d5 { background-image: url('../images/d5.png'); }
+.card-d4 { background-image: url('../images/d4.png'); }
+.card-d3 { background-image: url('../images/d3.png'); }
+.card-d2 { background-image: url('../images/d2.png'); }

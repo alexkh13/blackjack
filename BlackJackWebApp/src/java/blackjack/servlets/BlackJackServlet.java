@@ -6,6 +6,7 @@ package blackjack.servlets;
  * and open the template in the editor.
  */
 
+import blackjack.servlets.BlackJackRequest.PlayerAction;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -165,7 +166,12 @@ public class BlackJackServlet extends HttpServlet {
                         service.resign(playerId);
                         break;
                     case ACTION:
-
+                        if(req.getAction() == PlayerAction.PLACE_BET) {
+                            service.placeBet((int)request.getSession().getAttribute(req.getGameName()), req.getMoney());
+                        }
+                        else {
+                            service.userAction((int)request.getSession().getAttribute(req.getGameName()), req.getAction());
+                        }
                         break;
                 }
             } 

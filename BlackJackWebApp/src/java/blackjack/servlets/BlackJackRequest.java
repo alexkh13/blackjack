@@ -11,6 +11,16 @@ package blackjack.servlets;
  * @author idmlogic
  */
 public class BlackJackRequest {
+    private PlayerAction action;
+
+
+    enum PlayerAction {
+        PLACE_BET,
+        HIT,
+        STAND,
+        DOUBLE,
+        SPLIT
+    }
     
     enum RequestType {
         CREATE,
@@ -23,6 +33,7 @@ public class BlackJackRequest {
     String playerName;
     int humans;
     int computers;
+    float money;
     RequestType type;
     
     public String getGameName() {
@@ -65,5 +76,15 @@ public class BlackJackRequest {
         this.computers = computers;
     }
     
+    public float getMoney() {
+        return money;
+    }
     
+    public PlayerAction getAction() {
+        return action;
+    }
+    
+    public void setAction(String action) {
+        this.action = PlayerAction.valueOf(action);
+    }
 }

@@ -15,6 +15,7 @@
     <link href="css/setup.css" rel="stylesheet">
     <link href="css/cards.css" rel="stylesheet">
 
+    <script src="js/lib/underscore-min.js"></script>
     <script src="js/lib/jquery-1.10.2.min.js"></script>
     <script src="js/lib/jquery-ui-1.10.4.min.js"></script>
     <script src="js/lib/jquery-ui.pietimer.js"></script>
@@ -23,7 +24,7 @@
     <script src="js/main.js"></script>
 </head>
 <body>
-    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    <div class="modal fade" id="login" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog">
             <div class="modal-content">
@@ -31,13 +32,18 @@
                     <h4 class="modal-title">BlackJack login</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Please specify a valid <b>BlackJack Server URL</b> and a preferred <b>player name</b>
+                        </div>
+                    </div>
                     <div class="form-group">
-                        <label class="form-label">Please specify a valid BlackJack Server URL</label>
+                        <label class="form-label">Server URL</label>
                         <input id="serverUrl" type="text" class="form-control" placeholder="http://url:port/path">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">and choose a valid player name</label>
-                        <input id="playerName" type="text" class="form-control" placeholder="">
+                        <label class="form-label">Player name</label>
+                        <input id="playerName" type="text" class="form-control" placeholder="" value="Player">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -46,7 +52,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="games" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    <div class="modal fade" id="games" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -79,7 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    <div class="modal fade" id="create" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog">
             <div class="modal-content">
@@ -127,7 +133,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="lobby" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    <div class="modal fade" id="lobby" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog">
             <div class="modal-content">
@@ -147,14 +153,14 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-danger" style="float:left" onclick="resign()">Leave</a>
-                    <span class="form-label">Waiting for other players...</span>
+                    <span class="form-label" id="lobbyStatusText"></span>
                 </div>
             </div>
         </div>
     </div>
-    <div class="main">
+    <div id="game" class="main">
         <div class="main-header game-titlebar ui-corner-all ui-widget-header">
-            <span>Game name</span>
+            <span id="inGameNameDisplay">&nbsp;</span>
             <div class="dealer-container">
                 <table cellspacing="0" cellpadding="0">
                     <tr>
@@ -171,22 +177,22 @@
             <!--<td class="menu-container">-->
                 <!--<div class="ui-corner-all ui-state-default button" id="backButton" onclick="goBack()"><i class="fa fa-rocket"></i> <span>BlackJack</span></div>-->
                 <!--<div class="ui-corner-all ui-state-default button" id="resignButton"><i class="fa fa-rocket"></i> Resign</div>-->
-                <!--<div id="actionContainer">-->
-                    <!--<div>Make your move</div>-->
-                    <!--<div class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Hit</div>-->
-                    <!--<div class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Stand</div>-->
-                    <!--<div class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Split</div>-->
-                    <!--<div class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Double</div>-->
-                <!--</div>-->
-                <!--<div id="betContainer" class="bet-container">-->
-                    <!--<div>Place your bet</div>-->
-                    <!--<div id="betAmount" class="bet-amount"></div>-->
-                    <!--<div id="betSlider" class="bet-slider"></div>-->
-                <!--</div>-->
-                <!--<div id="timerContainer">-->
-                    <!--<div>Awaiting player action</div>-->
-                    <!--<div id="actionTimer"></div>-->
-                <!--</div>-->
+                <div id="actionContainer">
+                    <div>Make your move</div>
+                    <div id="hitButton" class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Hit</div>
+                    <div id="standButton"  class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Stand</div>
+                    <div id="splitButton"  class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Split</div>
+                    <div id="doubleButton"  class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Double</div>
+                </div>
+                <div id="betContainer" class="bet-container">
+                    <button id="betTrigger" class="btn btn-default">Place bet</button>
+                    <div id="betAmount" class="bet-amount"></div>
+                    <div id="betSlider" class="bet-slider"></div>
+                </div>
+                <div id="timerContainer">
+                    <div>Awaiting player action</div>
+                    <div id="actionTimer"></div>
+                </div>
                 <!--<div id="gamesContainer">-->
                     <!--<div>Available games to join</div>-->
                     <!--<div id="gamesList"></div>-->

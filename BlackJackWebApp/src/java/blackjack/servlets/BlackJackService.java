@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ws.blackjack.Action;
 import ws.blackjack.BlackJackWebService;
 import ws.blackjack.DuplicateGameName_Exception;
 import ws.blackjack.GameDetails;
@@ -80,5 +81,23 @@ public class BlackJackService {
 
     void resign(int playerId) throws InvalidParameters_Exception {
         webService.resign(playerId);
+    }
+    
+    void placeBet(int playerId, float money) throws InvalidParameters_Exception {
+        webService.playerAction(playerId, 0, Action.PLACE_BET, money, 0);
+    }
+
+    private Action getServerAction(BlackJackRequest.PlayerAction action) {
+        switch(action) {
+            case HIT: return Action.HIT;
+            case STAND: return Action.STAND;
+            case SPLIT: return Action.SPLIT;
+            case DOUBLE: return Action.DOUBLE;
+        }
+        return null;
+    }
+    
+    void userAction(int playerId, BlackJackRequest.PlayerAction action) throws InvalidParameters_Exception {
+        webService.playerAction(playerId, 0, getServerAction(action), 0, 0);
     }
 }
