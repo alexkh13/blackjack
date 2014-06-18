@@ -65,14 +65,6 @@ function hideAllMenuContainers() {
 $(function() {
     hideAllMenuContainers();
 
-    $(actionTimerID).pietimer({
-        timerSeconds: 10,
-        showPercentage: true,
-        callback: function() {
-            $(actionTimerID).pietimer('reset');
-        }
-    });
-
     $('.spinner .btn:first-of-type').on('click', function() {
         var input = $(this).parent().parent().children('input');
         input.val( parseInt(input.val(), 10) + 1);
@@ -318,4 +310,16 @@ function showGame(game, players, fast) {
         new Game(game, players);
 
     }, fast ? 0 : 3000);
+}
+
+function startTimer(timeout, callback) {
+    console.log("start timer")
+    $("#actionTimer").pietimer('reset');
+    $("#actionTimer").pietimer({
+        timerSeconds: timeout,
+        showPercentage: true,
+        callback: function() {
+            callback();
+        }
+    });
 }

@@ -17,6 +17,12 @@
 
 .player-container {
     clear: both;
+    height: 150px;
+}
+
+.playername-container.winner {
+    border: solid 2px yellow;
+    border-radius: 10px;
 }
 
 .playername-container {
@@ -29,10 +35,13 @@
 
 .cards-container {
     margin-bottom: 10px;
+    display: inline-block;
+    position: relative;
+    margin-right:100px;
 }
 
 .card {
-    position: relative;
+    position: absolute;
     background-size: 80px 110px;
     display: inline-block;
     width: 80px;
@@ -45,5 +54,5 @@
 
 .action-panel {
     float: left;
-    width: 300px;
+    min-width: 300px;
 }

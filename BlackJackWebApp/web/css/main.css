@@ -26,11 +26,8 @@ html, body {
     min-width: 1000px;
 }
 
-.main-container,
-.menu-container {
-    vertical-align: top;
-    padding: 10px;
-    height: 100%;
+.main-container {
+    position: relative;
 }
 
 .menu-container {
@@ -69,7 +66,6 @@ html, body {
 }
 
 .game-row {
-    cursor: pointer;
 }
 
 .game-row td:last-child {
@@ -116,4 +112,10 @@ html, body {
     position: absolute;
     top: 0;
     left: 4px;
+}
+
+#actionTimer {
+    position: absolute;
+    top: 0;
+    left: 150px;
 }
