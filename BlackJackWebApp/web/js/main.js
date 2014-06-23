@@ -288,16 +288,6 @@ function joinGame(name) {
         })
 }
 
-function runInterval(run, checker, finish, interval) {
-    var interval = setInterval(function() {
-        if(!checker(run())) {
-            clearInterval(interval);
-            finish();
-        }
-    }, interval);
-    return interval;
-}
-
 function showGame(game, players, fast) {
     gameName = game;
     if(!fast) {
@@ -312,14 +302,17 @@ function showGame(game, players, fast) {
     }, fast ? 0 : 3000);
 }
 
-function startTimer(timeout, callback) {
-    console.log("start timer")
+function stopTimer() {
     $("#actionTimer").pietimer('reset');
+}
+
+function startTimer(timeout) {
+    stopTimer();
     $("#actionTimer").pietimer({
         timerSeconds: timeout,
         showPercentage: true,
         callback: function() {
-            callback();
+            stopTimer();
         }
     });
 }

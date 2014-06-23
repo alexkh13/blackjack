@@ -33,14 +33,15 @@
                     $this.addClass('pietimer');
                     $this.css({fontSize: $this.width()});
                     $this.data('pietimer', state);
-                    if (state.showPercentage) {
-                        $this.find('.percent').show();
-                    }
-                    if (state.fill) {
-                        $this.addClass('fill');
-                    }
-                    $this.pietimer('start');
+
                 }
+                if (state.showPercentage) {
+                    $this.find('.percent').show();
+                }
+                if (state.fill) {
+                    $this.addClass('fill');
+                }
+                $this.pietimer('start');
             });
         },
 

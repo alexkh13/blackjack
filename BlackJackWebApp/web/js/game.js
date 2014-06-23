@@ -1,6 +1,3 @@
-/**
- * Created by idmlogic on 07-Jun-14.
- */
 
 var playerListID = "#playerList";
 var dealerCardsID = "#dealerCards";
@@ -67,6 +64,7 @@ var eventHandlers = {
     },
     'PLAYER_TURN': function(event) {
         this.playerList.prepend(this.playersMap[event.playerName].element);
+        this.playerList.prepend(this.playersMap[playerName]);
     },
     'CARDS_DEALT': function(event) {
         if(event.playerName) {
@@ -100,16 +98,19 @@ var eventHandlers = {
     },
     'GAME_WINNER': function(event) {
         var player = this.playersMap[event.playerName];
-        this.playerList.prepend(player.element);
+//        this.playerList.prepend(player.element);
+//        this.playerList.prepend(this.playersMap[playerName]);
         player.declareWinner(event.money);
     },
     'PROMPT_PLAYER_TO_TAKE_ACTION': function(event) {
         if(event.timeout) startTimer(event.timeout);
         var player = this.playersMap[event.playerName];
         if(playerName != event.playerName) {
+
         }
         else if(this.numOfBets == this.playerCount) {
             player.requireAction(function(action) {
+                stopTimer();
                 var data = {
                     type: 'ACTION',
                     action: action,
@@ -126,6 +127,7 @@ var eventHandlers = {
         }
         else {
             player.requireBet(function(amount) {
+                stopTimer();
                 var data = {
                     type: 'ACTION',
                     action: 'PLACE_BET',

@@ -11,8 +11,8 @@
 }
 .pietimer > .percent {
     position: absolute;
-    top: 1.05em;
-    left: 0;
+    top: 0.7em;
+    left: -0.3em;
     width: 3.33em;
     font-size: 0.3em;
     text-align:center;

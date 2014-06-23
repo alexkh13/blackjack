@@ -44,12 +44,13 @@ html, body {
 
 .bet-container {
     position: relative;
+    padding-top: 25px;
 }
 
 .bet-amount {
     font-family: FontAwesome;
     position: absolute;
-    top: 0;
+    top: 25px;
     right: 0;
     font-size: 30px;
 }
@@ -116,6 +117,6 @@ html, body {
 
 #actionTimer {
     position: absolute;
-    top: 0;
-    left: 150px;
+    top: 40px;
+    left: 10px;
 }
