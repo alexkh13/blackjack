@@ -64,7 +64,12 @@ var eventHandlers = {
     },
     'PLAYER_TURN': function(event) {
         this.playerList.prepend(this.playersMap[event.playerName].element);
-        this.playerList.prepend(this.playersMap[playerName]);
+    },
+    'PLAYER_RESIGNED': function(event) {
+        this.playersMap[event.playerName].element.remove();
+        if(playerName == event.playerName) {
+            showAvailableGames();
+        }
     },
     'CARDS_DEALT': function(event) {
         if(event.playerName) {

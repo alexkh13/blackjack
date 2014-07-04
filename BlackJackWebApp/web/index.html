@@ -27,6 +27,8 @@
     <script src="js/main.js"></script>
 </head>
 <body>
+
+    <!--login dialog-->
     <div class="modal fade" id="login" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog">
@@ -55,6 +57,8 @@
             </div>
         </div>
     </div>
+
+    <!--main dialog-->
     <div class="modal fade" id="games" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog modal-lg">
@@ -88,6 +92,8 @@
             </div>
         </div>
     </div>
+
+    <!--new game setup dialog-->
     <div class="modal fade" id="create" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog">
@@ -107,7 +113,7 @@
                             <label for="num-humans" class="col-sm-4 control-label">Number of Humans</label>
                             <div class="col-sm-8">
                                 <div class="input-group spinner">
-                                    <input type="text" id="num-humans" class="form-control" value="1">
+                                    <input type="text" id="num-humans" class="form-control readonly-input" min-val="1" value="1" readonly>
                                     <div class="input-group-btn-vertical">
                                         <button class="btn btn-default"><i class="fa fa-caret-up"></i></button>
                                         <button class="btn btn-default"><i class="fa fa-caret-down"></i></button>
@@ -119,7 +125,7 @@
                             <label for="num-computers" class="col-sm-4 control-label">Number of Computers</label>
                             <div class="col-sm-8">
                                 <div class="input-group spinner">
-                                    <input type="text" id="num-computers" class="form-control" value="0">
+                                    <input type="text" id="num-computers" class="form-control readonly-input" min-val="0" value="0" readonly>
                                     <div class="input-group-btn-vertical">
                                         <button class="btn btn-default"><i class="fa fa-caret-up"></i></button>
                                         <button class="btn btn-default"><i class="fa fa-caret-down"></i></button>
@@ -131,11 +137,14 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-danger" style="float:left" onclick="showAvailableGames('#create')">Cancel</a>
+                    <span id="createGameErrorMessage"></span>
                     <button type="button" class="btn btn-success" onclick="createGame()">Let's go!&nbsp;&nbsp;<i class="fa fa-play-circle"></i></button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!--game lobby dialog-->
     <div class="modal fade" id="lobby" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
          data-backdrop="static" >
         <div class="modal-dialog">
@@ -146,8 +155,8 @@
                 <div class="modal-body">
                     <table class="table table-hover table-condensed">
                         <thead>
+                        <th width="50"></th>
                         <th>Player name</th>
-                        <th>Human</th>
                         <th>Money</th>
                         </thead>
                         <tbody id="playersList">
@@ -155,13 +164,15 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-danger" style="float:left" onclick="resign()">Leave</a>
-                    <span class="form-label" id="lobbyStatusText"></span>
+                    <a class="btn btn-danger" style="float:left" onclick="resign('#lobby')">Leave</a>
+                    <span class="btn btn-default status" disabled id="lobbyStatusText"></span>
                 </div>
             </div>
         </div>
     </div>
-    <div id="game" class="main">
+
+    <!--main game screen-->
+    <div id="game" class="main" style="display:none">
         <div class="main-header game-titlebar ui-corner-all ui-widget-header">
             <span id="inGameNameDisplay">&nbsp;</span>
             <div class="dealer-container">

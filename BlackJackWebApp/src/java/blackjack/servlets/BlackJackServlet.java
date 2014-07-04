@@ -28,6 +28,8 @@ import javax.xml.ws.WebServiceRef;
 import ws.blackjack.BlackJackWebService;
 import ws.blackjack.BlackJackWebService_Service;
 import ws.blackjack.DuplicateGameName_Exception;
+import ws.blackjack.Event;
+import ws.blackjack.EventType;
 import ws.blackjack.GameDoesNotExists_Exception;
 import ws.blackjack.InvalidParameters_Exception;
 
@@ -42,7 +44,6 @@ public class BlackJackServlet extends HttpServlet {
     private BlackJackWebService webService;
     
     private BlackJackService service;
-    private String sessionId;
             
     private final Gson gson = new Gson();
     private String requestGameName;
@@ -52,11 +53,21 @@ public class BlackJackServlet extends HttpServlet {
         webService = (BlackJackWebService)session.getAttribute("webService");
         return webService != null;
     }
+
+    private boolean playerResigned(BlackJackResponse res, String playerName) {
+        for(Event event : res.events) {
+            if(event.getType() == EventType.PLAYER_RESIGNED && event.getPlayerName().equals(playerName)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     enum BlackJackError {
         NOT_LOGGED_IN,
         GAME_DOES_NOT_EXIST,
-        GAME_EXIST
+        GAME_EXIST,
+        NOT_IN_GAME
     }
     
     /**
@@ -108,9 +119,11 @@ public class BlackJackServlet extends HttpServlet {
         if(processRequest(request, response)) {
             if(requestGameName != null) {
                 try {
-                    System.out.println("Request for " + requestGameName);
                     int playerId = (int)request.getSession().getAttribute(requestGameName);
                     BlackJackResponse res = service.getGame(playerId, requestGameName);
+                    if(playerResigned(res, (String)request.getSession().getAttribute("playerName"))) {
+                        request.getSession().setAttribute(requestGameName, null);
+                    }
                     send(res);
                 } 
                 catch (GameDoesNotExists_Exception ex) {
@@ -119,9 +132,11 @@ public class BlackJackServlet extends HttpServlet {
                 catch (InvalidParameters_Exception ex) {
                     error(response, ex.getMessage());
                 }
+                catch (NullPointerException ex) {
+                    error(response, BlackJackError.NOT_IN_GAME);
+                }
             }
             else {
-                System.out.println("Request for all games");
                 // get waiting games
                 ArrayList<BlackJackResponse> ress = service.getAvailableGames();
                 for(BlackJackResponse res : ress) {
@@ -163,6 +178,7 @@ public class BlackJackServlet extends HttpServlet {
                         break;
                     case RESIGN:
                         int playerId = (int)request.getSession().getAttribute(req.getGameName());
+                        request.getSession().setAttribute(req.getGameName(), null);
                         service.resign(playerId);
                         break;
                     case ACTION:
@@ -227,15 +243,26 @@ public class BlackJackServlet extends HttpServlet {
                 response.sendError(404, "Request game does not exist");
                 break;
             case GAME_EXIST:
-                response.sendError(500, "Game already exist");
+                error(response, "Game already exists");
                 break;
             case NOT_LOGGED_IN:
                 response.sendError(403, "Not logged in");
+                break;
+            case NOT_IN_GAME:
+                error(response, "You didn't join this game");
         }
     }
     
     private void error(HttpServletResponse response, String message) throws IOException {
-        response.sendError(500, message);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        send(new ErrorMessage(message));
+    }
+    
+    private class ErrorMessage {
+        String message;
+        ErrorMessage(String message) {
+            this.message = message;
+        }
     }
     
 }

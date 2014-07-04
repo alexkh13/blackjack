@@ -22,7 +22,7 @@ import java.util.Objects;
  */
 public class Player implements XMLEntity, Cloneable {
     
-    private static float START_MONEY = 2000;
+    private static float START_MONEY = 4000;
     private boolean folded = false;
     private String name;
     

@@ -95,6 +95,7 @@ public class BlackJackWebService {
     }
 
     public void createGame(java.lang.String name, int humanPlayers, int computerizedPlayers) throws DuplicateGameName_Exception, InvalidParameters_Exception {
+        computerizedPlayers = computerizedPlayers < 0 ? 0 : computerizedPlayers;
         if(isGameExists(name)) {
             throw new DuplicateGameName_Exception(name,new DuplicateGameName());
         }

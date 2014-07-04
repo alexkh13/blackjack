@@ -120,3 +120,17 @@ html, body {
     top: 40px;
     left: 10px;
 }
+
+.readonly-input {
+    cursor: default;
+    background-color: transparent;
+}
+
+#createGameErrorMessage {
+    color: red;
+    margin-right: 20px;
+}
+
+.btn.btn-default.status {
+    opacity: 1;
+}

@@ -1,58 +1,17 @@
-/**
- * Created by idmlogic on 02-Jun-14.
- */
 
 // constants
-var PAGES_DIRECTORY = "pages";
+var DEFAULT_SERVER_URL = "http://localhost:8081/blackjack/BlackJackWebService";
 var DEFAULT_BET_AMOUNT = 100;
+var MAX_NUMBER_OF_PLAYERS = 6;
 
 // DOM elements identifiers
-var mainContainerID = "#mainContainer";
-var betSliderID = "#betSlider";
-var betAmountID = "#betAmount";
-var actionTimerID = "#actionTimer";
 var betContainerID = "#betContainer";
 var timerContainerID = "#timerContainer";
 var actionContainerID = "#actionContainer";
-var gamesListID = "#gamesList";
 var gamesListContainerID = "#gamesContainer";
-var backButtonID = "#backButton";
 var resignButtonID = "#resignButton";
-var mainMenuContainerID = "#mainMenuContainer";
-
-// enums
-var PAGES = {
-    SETUP: "setup.html",
-    GAME: "game.html",
-    WELCOME: "welcome.html"
-};
 
 var currentTimeout;
-
-function loadPage(page, callback) {
-    $.get(PAGES_DIRECTORY + "/" + page, function(html) {
-        $(mainContainerID).html(html);
-        if(callback) callback();
-    });
-}
-
-function goBack() {
-    loadPage(PAGES.WELCOME, function() {
-        toggleGoBackButton(false);
-        hideAllMenuContainers();
-        $(mainMenuContainerID).show();
-    });
-}
-
-function toggleGoBackButton(value) {
-    $(backButtonID + " span").text(value ? "Back" : "BlackJack");
-}
-
-function goToCreateGame() {
-    loadPage(PAGES.SETUP, function() {
-       $(mainMenuContainerID).hide();
-    });
-}
 
 function hideAllMenuContainers() {
     $(actionContainerID).hide();
@@ -67,11 +26,14 @@ $(function() {
 
     $('.spinner .btn:first-of-type').on('click', function() {
         var input = $(this).parent().parent().children('input');
-        input.val( parseInt(input.val(), 10) + 1);
+        var val = parseInt(input.val(), 10) + 1;
+        if(val <= MAX_NUMBER_OF_PLAYERS) input.val( val );
     });
     $('.spinner .btn:last-of-type').on('click', function() {
         var input = $(this).parent().parent().children('input');
-        input.val( parseInt(input.val(), 10) - 1);
+        var min = parseInt(input.attr("min-val"));
+        var val = parseInt(input.val(), 10) - 1;
+        if(val >= min) input.val( val );
     });
 
     $(".button").each(function(i,el) {
@@ -83,7 +45,7 @@ $(function() {
         });
     });
 
-    $("#serverUrl").val("http://localhost:8081/blackjack/BlackJackWebService");
+    $("#serverUrl").val(DEFAULT_SERVER_URL);
 
     $.ajax({
         url: 'login'
@@ -123,18 +85,18 @@ function showAvailableGames(current) {
                 var button = $("<button class='btn btn-xs'>");
                 if(game.playerId) {
                     button.text("Resume game");
-                    button.addClass("btn-success");
+                    button.addClass("btn-primary");
                     button.bind("click",function() {
                         if(game.status == 'ACTIVE') {
-                        $.ajax({
-                            url: 'api/' + game.name,
-                        })
-                            .done(function(data) {
-                                showGame(game.name, data.players, true);
+                            $.ajax({
+                                url: 'api/' + game.name
                             })
-                            .fail(function() {
-                                // todo:
-                            })
+                                .done(function(data) {
+                                    showGame(game.name, data.players, true);
+                                })
+                                .fail(function() {
+                                    // todo:
+                                })
                         }
                         else {
                             showGameLobby(game.name);
@@ -142,11 +104,17 @@ function showAvailableGames(current) {
                     });
                 }
                 else {
-                    button.text("Join game");
+                    button.text(game.status == 'ACTIVE' ? "Active game" : "Join game");
                     button.addClass("btn-default");
-                    button.bind("click",function() {
-                        joinGame(game.name);
-                    });
+                    if(game.status == 'ACTIVE') {
+                        button.attr('disabled', true);
+                    }
+                    else {
+                        button.addClass("btn-success");
+                        button.bind("click",function() {
+                            joinGame(game.name);
+                        });
+                    }
                 }
                 row.addClass("game-row");
                 row.append("<td>" + game.name + "</td>");
@@ -198,14 +166,15 @@ function showCreateGame() {
 
 var gameName;
 
+
 function refereshPlayerList(players, theRest) {
     var list = $("#playersList");
     list.empty();
     $(players).each(function(i, player) {
         var row = $("<tr>");
+        row.append("<td style='text-align:center'><i class='fa fa-" + (player.type == "HUMAN" ? 'male' : 'laptop') + "'></i></td>");
         row.append("<td>" + player.name + "</td>");
-        row.append("<td>" + player.type + "</td>");
-        row.append("<td>" + player.money + "</td>");
+        row.append("<td>" + player.money + "<i class='fa fa-dollar'></i></td>");
         list.append(row);
     });
     for(var i=0; i<theRest;i++) {
@@ -221,6 +190,8 @@ function showGameLobby(name){
     $("#games").modal("hide");
     $("#lobby").modal("show");
     $("#gameNameDisplay").text(name);
+
+    $("#playersList").empty();
 
     function refresher() {
         $.ajax({
@@ -240,14 +211,20 @@ function showGameLobby(name){
             })
     }
 
+    $("#lobbyStatusText").removeClass("btn-success");
     $("#lobbyStatusText").text("Waiting for other players...");
 
-    $("#lobby").on('shown.bs.modal', function() {
-        refresher();
-    });
+    $("#lobby").on('shown.bs.modal', refresher);
 }
 
 function createGame() {
+    var numHumans = parseInt($("#num-humans").val());
+    var numComputers = parseInt($("#num-computers").val());
+    if(numHumans+numComputers > MAX_NUMBER_OF_PLAYERS) {
+        $("#createGameErrorMessage").text("Max number of player is " + MAX_NUMBER_OF_PLAYERS);
+        return;
+    }
+    $("#createGameErrorMessage").empty();
     $.ajax({
         url: 'api',
         type: 'POST',
@@ -263,8 +240,8 @@ function createGame() {
             $("#create").modal("hide");
             showGameLobby(gameName);
         })
-        .fail(function(xhr, status, err) {
-            console.log(xhr, status, err);
+        .fail(function(xhr) {
+            $("#createGameErrorMessage").text(xhr.responseJSON.message);
         })
 }
 
@@ -291,15 +268,16 @@ function joinGame(name) {
 function showGame(game, players, fast) {
     gameName = game;
     if(!fast) {
+        $("#lobbyStatusText").addClass("btn-success");
         $("#lobbyStatusText").text("Game ready! Please wait...");
     }
     setTimeout(function() {
         $("#games").modal("hide");
         $("#lobby").modal("hide");
-
+        $("#game").show();
         new Game(game, players);
 
-    }, fast ? 0 : 3000);
+    }, fast ? 0 : 1000);
 }
 
 function stopTimer() {
@@ -315,4 +293,20 @@ function startTimer(timeout) {
             stopTimer();
         }
     });
+}
+
+function resign(from) {
+    function handler() {
+        showAvailableGames(from);
+    }
+    $.ajax({
+        url: 'api',
+        type: 'POST',
+        data: JSON.stringify({
+            gameName: gameName,
+            type: 'RESIGN'
+        })
+    })
+        .done(handler)
+        .fail(handler)
 }
