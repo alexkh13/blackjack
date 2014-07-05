@@ -17,8 +17,4 @@
             30
         </session-timeout>
     </session-config>
-    <context-param>
-        <param-name>webservice_url</param-name>
-        <param-value>http://localhost:8081/blackjack/BlackJackWebService</param-value>
-    </context-param>
 </web-app>
