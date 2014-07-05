@@ -9,10 +9,10 @@ function Game(gameName, players) {
     this.lastEventId = -1;
 
     this.gameName = gameName;
-    this.playerList = $(playerListID);
+    this.playerList = $(playerListID).empty();
 
     this.dealerCards = new Cards([], "left");
-    $(dealerCardsID).append(this.dealerCards.element);
+    $(dealerCardsID).empty().append(this.dealerCards.element);
 
     this.numOfBets = 0;
     this.playerCount = 0;
@@ -27,7 +27,6 @@ function Game(gameName, players) {
     });
 
     this.pullEvents = function() {
-        console.log("pullEvents from " + (self.lastEventId + 1));
         $.ajax({
             url: 'api/' + self.gameName
         })
@@ -40,13 +39,15 @@ function Game(gameName, players) {
                     var currentEvent = parseEvent(event);
                     self.lastEventId = currentEvent.id;
                 });
-                setTimeout(self.pullEvents, 1000);
+                self.nextPullTimout = setTimeout(self.pullEvents, 1000);
+            })
+            .fail(function() {
+                showAvailableGames();
             })
     }
 
     function parseEvent(event) {
         if(!event) return;
-        console.log("parseEvent", event);
         eventHandlers[event.type].apply(self,[event]);
         return event;
     }
@@ -63,11 +64,16 @@ var eventHandlers = {
         this.dealerCards.clear();
     },
     'PLAYER_TURN': function(event) {
-        this.playerList.prepend(this.playersMap[event.playerName].element);
+        var player = this.playersMap[event.playerName];
+        if(player.isHuman) {
+            this.playerList.prepend(this.playersMap[event.playerName].element);
+        }
     },
     'PLAYER_RESIGNED': function(event) {
         this.playersMap[event.playerName].element.remove();
         if(playerName == event.playerName) {
+            clearTimeout(this.nextPullTimout);
+            showError("You've been kicked out of the game due to timeout.");
             showAvailableGames();
         }
     },
@@ -90,6 +96,9 @@ var eventHandlers = {
                 break;
             case "HIT":
                 player.cards.add(event.cards);
+                if(event.money == 21) {
+                    player.declareBlackjack();
+                }
                 if(event.money > 20) {
                     player.switchHand();
                 }
@@ -99,15 +108,25 @@ var eventHandlers = {
                 break;
             case "STAND":
                 player.switchHand();
+                break;
+            case "DOUBLE":
+                player.doubleBet();
+                player.cards.add(event.cards);
+                if(event.money == 21) {
+                    player.declareBlackjack();
+                }
+                if(event.money > 20) {
+                    player.switchHand();
+                }
+                break;
         }
     },
     'GAME_WINNER': function(event) {
         var player = this.playersMap[event.playerName];
-//        this.playerList.prepend(player.element);
-//        this.playerList.prepend(this.playersMap[playerName]);
         player.declareWinner(event.money);
     },
     'PROMPT_PLAYER_TO_TAKE_ACTION': function(event) {
+        var self = this;
         if(event.timeout) startTimer(event.timeout);
         var player = this.playersMap[event.playerName];
         if(playerName != event.playerName) {
@@ -115,7 +134,7 @@ var eventHandlers = {
         }
         else if(this.numOfBets == this.playerCount) {
             player.requireAction(function(action) {
-                stopTimer();
+                hideTimer();
                 var data = {
                     type: 'ACTION',
                     action: action,
@@ -127,12 +146,21 @@ var eventHandlers = {
                     data: JSON.stringify(data)
                 })
                     .done(function() {
+                        $("#actionErrorMessage").empty();
+                        showTimer();
+                        stopTimer();
+                    })
+                    .fail(function(xhr) {
+                        $("#actionErrorMessage").text(xhr.responseJSON ? xhr.responseJSON.message : "Can't do that");
+                        showTimer();
+                        delete event.timeout;
+                        eventHandlers['PROMPT_PLAYER_TO_TAKE_ACTION'].apply(self, [event]);
                     })
             });
         }
         else {
             player.requireBet(function(amount) {
-                stopTimer();
+                hideTimer();
                 var data = {
                     type: 'ACTION',
                     action: 'PLACE_BET',
@@ -145,6 +173,15 @@ var eventHandlers = {
                     data: JSON.stringify(data)
                 })
                     .done(function() {
+                        $("#betErrorMessage").empty();
+                        showTimer();
+                        stopTimer();
+                    })
+                    .fail(function(xhr) {
+                        $("#betErrorMessage").text(xhr.responseJSON ? xhr.responseJSON.message : "Can't do that");
+                        showTimer();
+                        delete event.timeout;
+                        eventHandlers['PROMPT_PLAYER_TO_TAKE_ACTION'].apply(self, [event]);
                     })
             });
         }

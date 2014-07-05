@@ -265,6 +265,9 @@ public class Game {
     }
     
     public void userAction(String playerName, ActionType type, float money) throws NotEnoughMoneyException {
+        Card card;
+        int rank;
+        Event ev;
         
         switch(type) {
             case BET:
@@ -280,10 +283,19 @@ public class Game {
                 
             case DOUBLE:
                 currentPlayer.doubleBet();
+                card = dealer.hitCard();
+                rank = currentPlayer.hit(card);
+                ev = new Event();
+                ev.setPlayerName(currentPlayer.getName());
+                ev.setActionType(ActionType.DOUBLE);
+                ev.setCard(card);
+                ev.setNumber(rank);
+                events.push(ev);
+                break;
             case HIT:
-                Card card = dealer.hitCard();
-                int rank = currentPlayer.hit(card);
-                Event ev = new Event();
+                card = dealer.hitCard();
+                rank = currentPlayer.hit(card);
+                ev = new Event();
                 ev.setPlayerName(currentPlayer.getName());
                 ev.setActionType(ActionType.HIT);
                 ev.setCard(card);
@@ -349,10 +361,7 @@ public class Game {
                     }
                     float win = bet.getSum() * multiplier;
                     events.push(player, EventType.GAME_WINNER, win);
-                    player.giveMoney(bet.getSum() + win);
-                }
-                else if(dillerRank == playerRank) {
-                    player.giveMoney(bet.getSum());
+                    player.giveMoney(win);
                 }
             }
         }
@@ -362,7 +371,7 @@ public class Game {
         // diller and player are in rage
         if(dillerRank < 22 && playerRank < 22) {
             // the player has a bigger hand
-            if(playerRank > dillerRank) {
+            if(playerRank >= dillerRank) {
                 return true;
             }
         }

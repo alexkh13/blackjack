@@ -188,6 +188,8 @@ public class BlackJackServlet extends HttpServlet {
                         else {
                             service.userAction((int)request.getSession().getAttribute(req.getGameName()), req.getAction());
                         }
+                        // we have to put something in reponse in order for it to be valid
+                        send("OK");
                         break;
                 }
             } 

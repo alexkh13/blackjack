@@ -4,26 +4,9 @@ var DEFAULT_SERVER_URL = "http://localhost:8081/blackjack/BlackJackWebService";
 var DEFAULT_BET_AMOUNT = 100;
 var MAX_NUMBER_OF_PLAYERS = 6;
 
-// DOM elements identifiers
-var betContainerID = "#betContainer";
-var timerContainerID = "#timerContainer";
-var actionContainerID = "#actionContainer";
-var gamesListContainerID = "#gamesContainer";
-var resignButtonID = "#resignButton";
-
 var currentTimeout;
 
-function hideAllMenuContainers() {
-    $(actionContainerID).hide();
-    $(betContainerID).hide();
-    $(timerContainerID).hide();
-    $(resignButtonID).hide();
-    $(gamesListContainerID).hide();
-}
-
 $(function() {
-    hideAllMenuContainers();
-
     $('.spinner .btn:first-of-type').on('click', function() {
         var input = $(this).parent().parent().children('input');
         var val = parseInt(input.val(), 10) + 1;
@@ -34,15 +17,6 @@ $(function() {
         var min = parseInt(input.attr("min-val"));
         var val = parseInt(input.val(), 10) - 1;
         if(val >= min) input.val( val );
-    });
-
-    $(".button").each(function(i,el) {
-        $(el).bind("mouseover",function(){
-            $(this).addClass("ui-state-highlight");
-        });
-        $(el).bind("mouseout",function(){
-           $(this).removeClass("ui-state-highlight");
-        });
     });
 
     $("#serverUrl").val(DEFAULT_SERVER_URL);
@@ -68,6 +42,7 @@ function escape(text) {
 }
 
 function showAvailableGames(current) {
+    $("#game").hide();
     if(current) {
         $(current).modal("hide");
     }
@@ -80,6 +55,7 @@ function showAvailableGames(current) {
         url: 'api'
     })
         .done(function(games) {
+            list.empty();
             $(games).each(function(i, game) {
                 var row = $("<tr>");
                 var button = $("<button class='btn btn-xs'>");
@@ -214,7 +190,10 @@ function showGameLobby(name){
     $("#lobbyStatusText").removeClass("btn-success");
     $("#lobbyStatusText").text("Waiting for other players...");
 
-    $("#lobby").on('shown.bs.modal', refresher);
+    if(!$("#lobby").data("bind")) {
+        $("#lobby").on('shown.bs.modal', refresher);
+        $("#lobby").data("bind", true);
+    }
 }
 
 function createGame() {
@@ -284,6 +263,14 @@ function stopTimer() {
     $("#actionTimer").pietimer('reset');
 }
 
+function hideTimer() {
+    $("#actionTimer").hide();
+}
+
+function showTimer() {
+    $("#actionTimer").show();
+}
+
 function startTimer(timeout) {
     stopTimer();
     $("#actionTimer").pietimer({
@@ -309,4 +296,13 @@ function resign(from) {
     })
         .done(handler)
         .fail(handler)
+}
+
+function showError(message) {
+    $("#errorMessage").text(message);
+    $("#error").modal("show");
+}
+
+function closeError() {
+    $("#error").modal("hide");
 }

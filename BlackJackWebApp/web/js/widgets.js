@@ -19,7 +19,7 @@ var WidgetFactory = {
             range: "min",
             value: startAmount,
             min: 50,
-            max: 1000,
+            max: 5000,
             step: 50,
             slide: function( event, ui ) {
                 element.children("#betAmount").text("\uf155" + ui.value);
@@ -33,6 +33,14 @@ var WidgetFactory = {
 
     WidgetFactory._widgets['actionPanel'] = function(callback) {
         var element = generate("actionContainer");
+        element.children(".button").each(function(i,el) {
+            $(el).bind("mouseover",function(){
+                $(this).addClass("ui-state-highlight");
+            });
+            $(el).bind("mouseout",function(){
+                $(this).removeClass("ui-state-highlight");
+            });
+        });
         element.children("#hitButton").bind("click",function() {
             callback('HIT');
         });
@@ -45,6 +53,7 @@ var WidgetFactory = {
         element.children("#doubleButton").bind("click",function() {
             callback('DOUBLE');
         });
+        element.children("#actionErrorMessage").empty();
         return element;
     }
 

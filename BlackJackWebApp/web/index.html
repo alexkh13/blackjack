@@ -174,6 +174,7 @@
     <!--main game screen-->
     <div id="game" class="main" style="display:none">
         <div class="main-header game-titlebar ui-corner-all ui-widget-header">
+            <span class="btn btn-xs btn-default" onclick="resign()">Exit</span>
             <span id="inGameNameDisplay">&nbsp;</span>
             <div class="dealer-container">
                 <table cellspacing="0" cellpadding="0">
@@ -190,17 +191,35 @@
         </div>
     </div>
 
-    <div id="actionContainer">
-        <div>Make your move</div>
-        <div id="hitButton" class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Hit</div>
-        <div id="standButton"  class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Stand</div>
-        <div id="splitButton"  class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Split</div>
-        <div id="doubleButton"  class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Double</div>
+    <!--error dialog-->
+    <div class="modal fade" id="error" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         data-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Wow! Something happened here...</h4>
+                </div>
+                <div class="modal-body" id="errorMessage"></div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger" style="float:right" onclick="closeError()">OK</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="betContainer" class="bet-container">
+
+    <div id="actionContainer" style="display:none">
+        <div>Make your move</div>
+        <div id="hitButton" class="ui-corner-all ui-state-default button" ><i class="fa fa-rocket"></i> Hit</div>
+        <div id="standButton" class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Stand</div>
+        <div id="splitButton" class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Split</div>
+        <div id="doubleButton" class="ui-corner-all ui-state-default button"><i class="fa fa-rocket"></i> Double</div>
+        <div id="actionErrorMessage"></div>
+    </div>
+    <div id="betContainer" class="bet-container" style="display:none">
         <button id="betTrigger" class="btn btn-default">Place bet</button>
         <div id="betAmount" class="bet-amount"></div>
         <div id="betSlider" class="bet-slider"></div>
+        <div id="betErrorMessage"></div>
     </div>
 
 </body>

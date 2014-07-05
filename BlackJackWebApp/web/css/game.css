@@ -26,7 +26,7 @@
     margin-top: 10px;
 }
 
-.playername-container.winner {
+.winner {
     border: solid 2px yellow;
     border-radius: 10px;
 }
@@ -63,4 +63,8 @@
 .action-panel {
     float: left;
     min-width: 180px;
+}
+
+.playername-text {
+    margin-left: 10px;
 }

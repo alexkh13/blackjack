@@ -34,7 +34,7 @@ import ws.blackjack.PlayerType;
  * @author idmlogic
  */
 public class BlackJackGameRoom {
-    private final int SECONDS_TO_TIMEOUT = 10;
+    private final int SECONDS_TO_TIMEOUT = 20;
     private final int GAME_START_MONEY = 10000;
     
     private final ArrayList<ws.blackjack.Event> events = new ArrayList<>();

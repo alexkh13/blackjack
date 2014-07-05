@@ -170,7 +170,7 @@ public class Player implements XMLEntity, Cloneable {
     public void doubleBet() {
         if(currentBet != null) {
             if(currentBet.getCards().size() == 2) {
-                takeMoney(currentBet.getSum() * 2);
+                takeMoney(currentBet.getSum());
                 currentBet.Double();
             }
             else {

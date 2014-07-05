@@ -36,9 +36,7 @@ html, body {
     background-color: #333333;
 }
 
-.menu-container .button {
-    padding: 3px;
-    margin-bottom: 3px;
+.button {
     cursor: pointer;
 }
 

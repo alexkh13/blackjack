@@ -1,20 +1,27 @@
 function Player(details) {
     var self = this;
+    this.money = details.money;
     this.playerName = details.name;
-    this.isHuman = details.isHuman;
+    this.isHuman = details.type == "HUMAN";
     this.cards = details.cards;
     this.isSplit = false;
+    this.currentBet = 0;
 
     this.element = (function() {
         var base = $("<div>");
         var icon = $("<i>").addClass("ui-widget-header ui-corner-all fa fa-" + (self.isHuman ? "male" : "laptop"));
-        var name = $("<span>").text(self.playerName);
+        var money = $("<span>").addClass("ui-widget-header ui-corner-all").append("<i class='fa fa-dollar'></i>");
+        self.moneyContainer = $("<span>").appendTo(money);
+        self.arrow = $("<i class='fa fa-arrow-right'></i>");
+        var bet = self.bet = $("<span>").addClass("ui-widget-header ui-corner-all").append(self.arrow);
+        self.betContainer = $("<span>").appendTo(bet);
+        var name = $("<span class='playername-text'>").text(self.playerName);
 
         base.addClass("player-container");
 
         $("<div>")
             .addClass("playername-container ui-widget-content ui-corner-all")
-            .append(icon, name)
+            .append(icon, money, bet, name)
             .appendTo(base);
 
         self.container = $("<div>")
@@ -40,22 +47,45 @@ function Player(details) {
         return base;
     })();
 
+    this.setBet = function(amount) {
+        if(!amount) {
+            this.betContainer.empty();
+            this.bet.hide();
+        }
+        else {
+            this.currentBet = amount;
+            this.betContainer.text(amount);
+            this.bet.show();
+        }
+    }
+
+    this.setMoney = function(amount) {
+        this.moneyContainer.text(amount);
+    };
+
+    this.setMoney(details.money);
+
     this.clearPanel = function() {
         self.actionPanel.empty();
     }
 
     this.reset = function() {
+        self.setBetArrow("right");
         self.element.removeClass("winner");
         self.cards = self.cards1;
         self.cards1.clear();
         self.cards2.clear();
         self.container.append(self.cards2.element);
         self.isSplit = false;
+        self.prize = 0;
+        self.currentBet = 0;
+        self.setBet();
     }
 
     this.requireBet = function(callback) {
         self.actionPanel.html(
-            WidgetFactory.get('betSlider', DEFAULT_BET_AMOUNT, function(value) {
+            WidgetFactory.get('betSlider', self.lastBet || DEFAULT_BET_AMOUNT, function(value) {
+                self.lastBet = value;
                 self.clearPanel();
                 callback(value);
             })
@@ -64,15 +94,13 @@ function Player(details) {
 
     this.placeBet = function(amount) {
         self.clearPanel();
-        //todo
+        this.setMoney(self.money-=amount);
+        this.setBet(self.currentBet=amount);
     };
 
-    this.wait = function(time) {
-        self.actionPanel.html(
-            WidgetFactory.get('actionTimer', time, function() {
-                self.clearPanel();
-            })
-        );
+    this.doubleBet = function() {
+        this.setMoney(self.money-=self.currentBet);
+        this.setBet(self.currentBet+=self.currentBet);
     }
 
     this.requireAction = function(callback) {
@@ -91,6 +119,8 @@ function Player(details) {
         self.cards1.add(cards1);
         self.cards2.add(cards2);
         self.isSplit = true;
+        self.setMoney(self.money-=self.currentBet);
+        self.setBet(self.currentBet+=self.currentBet);
     }
 
     this.switchHand = function() {
@@ -101,6 +131,17 @@ function Player(details) {
     }
 
     this.declareWinner = function(prize) {
+        self.setMoney(self.money+=prize);
+        self.setBet(self.prize+=prize);
+        self.setBetArrow("left");
+    }
+
+    this.setBetArrow = function(dir) {
+        self.arrow.removeClass("fa-arrow-right fa-arrow-left");
+        self.arrow.addClass("fa-arrow-" + dir);
+    }
+
+    this.declareBlackjack = function() {
         self.element.addClass("winner");
     }
 
